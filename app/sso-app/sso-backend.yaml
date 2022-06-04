@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sso-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sso-backend
+  template:
+    metadata:
+      labels:
+        app: sso-backend
+    spec:
+      containers:
+        - name: sso-backend
+          image: sivakumarp3695/my-accounts-sso
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DB_HOST_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-app-config-map
+                  key: db_host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-app-config-map
+                  key: db_port
+            - name: DB_DATABASE
+              value: "AccountsDB"
+            - name: STORAGE_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-app-config-map
+                  key: storage_svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sso-backend
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+  selector:
+    app: sso-backend

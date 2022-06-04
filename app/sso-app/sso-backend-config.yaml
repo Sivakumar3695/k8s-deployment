@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sso-app-config-map
+data:
+  db_host: mysql-service
+  db_port: "80"
+  storage_svc: storage-svc

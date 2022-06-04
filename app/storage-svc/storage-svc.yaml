@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-svc
+  template:
+    metadata:
+      labels:
+        app: storage-svc
+    spec:
+      containers:
+        - name: storage-svc
+          image: sivakumarp3695/my-storage-svc
+          ports:
+            - name: http
+              containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-svc
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+  selector:
+    app: storage-svc

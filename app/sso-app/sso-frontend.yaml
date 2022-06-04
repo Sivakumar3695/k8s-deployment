@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sso-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sso-frontend
+  template:
+    metadata:
+      labels:
+        app: sso-frontend
+    spec:
+      containers:
+        - name: sso-frontend
+          image: sivakumarp3695/my-accounts-sso-frontend
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: sso-frontend-nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sso-frontend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  selector:
+    app: sso-frontend
