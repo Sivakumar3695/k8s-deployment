@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: storage-svc-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: storage-svc
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sso-backend
+      ports:
+        - protocol: TCP
+          port: 8000
